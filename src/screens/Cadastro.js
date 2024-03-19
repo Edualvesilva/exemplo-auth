@@ -1,13 +1,34 @@
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
 
-export default function Cadastro() {
+export default function Cadastro({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  const cadastrar = async () => {
+    if (!email || !senha) {
+      Alert.alert("Atenção!", "Preencha e-mail e senha");
+      return;
+    }
+  };
+
   return (
     <View style={estilos.container}>
       <View style={estilos.formulario}>
-        <TextInput placeholder="E-mail" style={estilos.input} />
-        <TextInput placeholder="Senha" style={estilos.input} secureTextEntry />
+        <TextInput
+          placeholder="E-mail"
+          style={estilos.input}
+          keyboardType="email-address"
+          onChangeText={(valor) => setEmail(valor)}
+        />
+        <TextInput
+          placeholder="Senha"
+          style={estilos.input}
+          secureTextEntry
+          onChangeText={(valor) => setSenha(valor)}
+        />
         <View style={estilos.botoes}>
-          <Button title="Cadastre-se" color="blue" />
+          <Button title="Cadastre-se" color="blue" onPress={cadastrar} />
         </View>
       </View>
     </View>
