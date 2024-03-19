@@ -1,13 +1,90 @@
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
+import { auth } from "../../firebase.config";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
-export default function Cadastro() {
+export default function Cadastro({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [nome, setnome] = useState("");
+  const cadastrar = async () => {
+    if (!email || !senha || !nome) {
+      Alert.alert("Atenção!", "Preencha e-mail e senha");
+      return;
+    }
+    try {
+      const contaUser = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        senha
+      );
+      if (contaUser.user) {
+        await updateProfile(auth.currentUser, { displayName: nome });
+        console.log(contaUser.user.displayName);
+      }
+      Alert.alert("Cadastrado", "agora vc pode logar!", [
+        {
+          text: "Ficar aqui mesmo",
+          style: "cancel",
+          onPress: () => {
+            return;
+          },
+        },
+        {
+          text: "Ir para área logada",
+          style: "default",
+          onPress: () => {
+            navigation.replace("AreaLogada");
+          },
+        },
+      ]);
+    } catch (error) {
+      console.error(error.code);
+      let mensagem;
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          mensagem = "E-mail já em uso";
+          break;
+        case "auth/weak-password":
+          mensagem = "Senha fraca (mínimo de 6 caracteres)";
+          break;
+
+        case "auth/invalid-email":
+          mensagem = "Endereço de e-mail Inválido";
+
+          break;
+
+        default:
+          mensagem = "Houve um erro, Tente novamente mais tarde";
+          break;
+      }
+      Alert.alert("Ops!", mensagem);
+    }
+  };
+
   return (
     <View style={estilos.container}>
       <View style={estilos.formulario}>
-        <TextInput placeholder="E-mail" style={estilos.input} />
-        <TextInput placeholder="Senha" style={estilos.input} secureTextEntry />
+        <TextInput
+          placeholder="Nome"
+          style={estilos.input}
+          keyboardType="default"
+          onChangeText={(valor) => setnome(valor)}
+        ></TextInput>
+        <TextInput
+          placeholder="E-mail"
+          style={estilos.input}
+          keyboardType="email-address"
+          onChangeText={(valor) => setEmail(valor)}
+        />
+        <TextInput
+          placeholder="Senha"
+          style={estilos.input}
+          secureTextEntry
+          onChangeText={(valor) => setSenha(valor)}
+        />
         <View style={estilos.botoes}>
-          <Button title="Cadastre-se" color="blue" />
+          <Button title="Cadastre-se" color="blue" onPress={cadastrar} />
         </View>
       </View>
     </View>
