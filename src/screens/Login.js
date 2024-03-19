@@ -14,6 +14,7 @@ import { useState } from "react";
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
   const login = async () => {
     if (!email || !senha) {
       Alert.alert("Hey, atenção!!", " Preencha Email e senha.");

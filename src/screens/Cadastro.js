@@ -1,19 +1,27 @@
 import { useState } from "react";
 import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
 import { auth } from "../../firebase.config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 export default function Cadastro({ navigation }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-
+  const [nome, setnome] = useState("");
   const cadastrar = async () => {
-    if (!email || !senha) {
+    if (!email || !senha || !nome) {
       Alert.alert("Atenção!", "Preencha e-mail e senha");
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, senha);
+      const contaUser = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        senha
+      );
+      if (contaUser.user) {
+        await updateProfile(auth.currentUser, { displayName: nome });
+        console.log(contaUser.user.displayName);
+      }
       Alert.alert("Cadastrado", "agora vc pode logar!", [
         {
           text: "Ficar aqui mesmo",
@@ -57,6 +65,12 @@ export default function Cadastro({ navigation }) {
   return (
     <View style={estilos.container}>
       <View style={estilos.formulario}>
+        <TextInput
+          placeholder="Nome"
+          style={estilos.input}
+          keyboardType="default"
+          onChangeText={(valor) => setnome(valor)}
+        ></TextInput>
         <TextInput
           placeholder="E-mail"
           style={estilos.input}

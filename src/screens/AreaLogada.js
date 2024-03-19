@@ -17,7 +17,9 @@ export default function AreaLogada({ navigation }) {
   return (
     <View style={estilos.container}>
       <View style={estilos.topo}>
-        <Text style={estilos.bemVindo}>Bem-vindo(a)</Text>
+        <Text style={estilos.bemVindo}>
+          Bem-vindo(a) {auth.currentUser.displayName}
+        </Text>
         <Text>Seu e-mail de cadastro é: </Text>
         <Text style={{ fontWeight: "bold" }}>{email}</Text>
         <Button title="Logout" color="#D35400" onPress={logout} />
