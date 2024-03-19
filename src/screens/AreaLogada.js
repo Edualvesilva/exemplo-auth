@@ -1,10 +1,15 @@
 import { Button, StyleSheet, Text, View } from "react-native";
+import { auth } from "../../firebase.config";
 
 export default function AreaLogada() {
+  const { email } = auth.currentUser;
+  console.log(email);
   return (
     <View style={estilos.container}>
       <View style={estilos.topo}>
         <Text style={estilos.bemVindo}>Bem-vindo(a)</Text>
+        <Text>Seu e-mail de cadastro é: </Text>
+        <Text style={{ fontWeight: "bold" }}>{email}</Text>
         <Button title="Logout" color="#D35400" />
       </View>
       <View style={estilos.geral}>
